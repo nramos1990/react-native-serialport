@@ -1,3 +1,4 @@
+This fork of react-native-serialport is used because it fixes [this issue](https://github.com/melihyarikkaya/react-native-serialport/issues/41) which prevents Android compilation. 
 
 # react-native-serialport
 
