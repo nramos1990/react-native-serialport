@@ -548,7 +548,16 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
   private void requestUserPermission() {
     if(device == null)
       return;
-    PendingIntent mPendingIntent = PendingIntent.getBroadcast(reactContext, 0 , new Intent(ACTION_USB_PERMISSION), 0);
+    int flags = 0;
+    int FLAG_MUTABLE = 33554432;  // hardcode the constant to avoid build error in SDK < 31
+
+    if(Build.VERSION.SDK_INT >= 31) {
+      flags = FLAG_MUTABLE;
+      System.out.println("RNSerialPort setting FLAG_MUTABLE");
+    } else {
+      System.out.println("RNSerialPort NOT setting FLAG_MUTABLE, SDK level is " + Build.VERSION.SDK_INT );
+    }
+    PendingIntent mPendingIntent = PendingIntent.getBroadcast(reactContext, 0 , new Intent(ACTION_USB_PERMISSION),  flags );
     usbManager.requestPermission(device, mPendingIntent);
   }
 
