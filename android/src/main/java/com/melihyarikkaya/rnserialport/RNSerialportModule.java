@@ -166,7 +166,8 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
     filter.addAction(ACTION_USB_PERMISSION);
     filter.addAction(ACTION_USB_ATTACHED);
     filter.addAction(ACTION_USB_DETACHED);
-    reactContext.registerReceiver(usbReceiver, filter);
+    int flag_RECEIVER_EXPORTED = 2; // hardcode the constant to avoid build error in SDK < 34
+    reactContext.registerReceiver(usbReceiver, filter, flag_RECEIVER_EXPORTED );
   }
 
   private void fillDriverList() {
@@ -551,10 +552,14 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
       return;
     int flags = 0;
     int FLAG_MUTABLE = 33554432;  // hardcode the constant to avoid build error in SDK < 31
+    int FLAG_IMMUTABLE = 67108864;  // hardcode the constant to avoid build error in SDK < 31
+    int FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT =  16777216;
 
     if(Build.VERSION.SDK_INT >= 31) {
       flags = FLAG_MUTABLE;
       System.out.println("RNSerialPort setting FLAG_MUTABLE");
+      flags = flags | FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT; // bitwise OR
+      System.out.println("RNSerialPort setting FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT");
     } else {
       System.out.println("RNSerialPort NOT setting FLAG_MUTABLE, SDK level is " + Build.VERSION.SDK_INT );
     }
