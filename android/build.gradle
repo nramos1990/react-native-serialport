@@ -5,19 +5,19 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:4.1.0")
+        classpath("com.android.tools.build:gradle:8.4.0")
     }
 }
 
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion 34
+    buildToolsVersion "34.0.0"
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion 24
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
@@ -37,24 +37,37 @@ android {
 }
 
 repositories {
-    mavenLocal()
-    maven {
-        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-        url("$rootDir/../node_modules/react-native/android")
-    }
+    mavenCentral()
     google()
-    jcenter()
 }
 
 allprojects {
     repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
+        maven {
+            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            url(new File(['node', '--print', "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), '../android'))
+        }
+        maven {
+            // Android JSC is installed from npm
+            url(new File(['node', '--print', "require.resolve('jsc-android/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim(), '../dist'))
+        }
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
     }
 }
 
 dependencies {
-    implementation 'com.google.guava:20.0'
     implementation 'com.facebook.react:react-native:+'
     implementation 'com.github.felHR85:UsbSerial:6.1.0'
+    // 1. Use Guava in your implementation only:
+    implementation("com.google.guava:guava:33.2.1-jre")
+
+    // 2. Use Guava types in your public API:
+    api("com.google.guava:guava:33.2.1-jre")
+
+    // 3. Android - Use Guava in your implementation only:
+    implementation("com.google.guava:guava:33.2.1-android")
+
+    // 4. Android - Use Guava types in your public API:
+    api("com.google.guava:guava:33.2.1-android")
 }
