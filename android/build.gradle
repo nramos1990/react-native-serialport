@@ -54,6 +54,7 @@ allprojects {
 }
 
 dependencies {
+    implementation 'com.google.guava'
     implementation 'com.facebook.react:react-native:+'
     implementation 'com.github.felHR85:UsbSerial:6.1.0'
 }
